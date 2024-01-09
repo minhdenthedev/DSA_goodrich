@@ -1,4 +1,4 @@
-package chapter3.examples.lists;
+package mycollections;
 
 public interface List<E> {
     /**

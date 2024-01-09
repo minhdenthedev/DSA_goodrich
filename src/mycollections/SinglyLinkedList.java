@@ -1,6 +1,6 @@
-package chapter3.examples.lists;
+package mycollections;
 
-public class CircularlyLinkedList<E> implements List<E>{
+public class SinglyLinkedList<E> implements List<E>, Stack<E> {
     private static class Node<E> {
         private E element;
         private Node<E> next;
@@ -19,8 +19,9 @@ public class CircularlyLinkedList<E> implements List<E>{
         }
     }
     private int size = 0;
-    private Node<E> tail;
-    public CircularlyLinkedList() {}
+    private Node<E> head = null;
+    private Node<E> tail = null;
+    public SinglyLinkedList() {}
 
     @Override
     public int size() {
@@ -35,7 +36,7 @@ public class CircularlyLinkedList<E> implements List<E>{
     @Override
     public E first() {
         if (isEmpty()) return null;
-        return tail.getNext().getElement();
+        return head.getElement();
     }
 
     @Override
@@ -44,42 +45,52 @@ public class CircularlyLinkedList<E> implements List<E>{
         return tail.getElement();
     }
 
-    /**
-     * Assign the tail to its next node.
-     */
-    public void rotate() {
-        if (tail != null) {
-            tail = tail.getNext();
-        }
-    }
-
     @Override
     public void addFirst(E e) {
+        head = new Node<>(e, head);
         if (isEmpty()) {
-            tail = new Node<>(e, null);
-        } else {
-            Node<E> newest = new Node<>(e, tail.getNext());
-            tail.setNext(newest);
+            tail = head;
         }
         size++;
     }
 
     @Override
     public void addLast(E e) {
-        addFirst(e);
-        tail = tail.getNext();
+        Node<E> newest = new Node<>(e, null);
+        if (isEmpty()) {
+            head = newest;
+        } else {
+            tail.setNext(newest);
+        }
+        tail = newest;
+        size++;
     }
 
     @Override
     public E removeFirst() {
         if (isEmpty()) return null;
-        Node<E> head = tail.getNext();
-        if (head == tail) {
-            tail = null;
-        } else {
-            tail.setNext(head.getNext());
-        }
+        E answer = head.getElement();
+        head = head.getNext();
         size--;
-        return head.getElement();
+        if (isEmpty()) {
+            // if size == 0 then head.getNext() = null then head also null
+            tail = null;
+        }
+        return answer;
+    }
+
+    @Override
+    public void push(E e) {
+        addFirst(e);
+    }
+
+    @Override
+    public E top() {
+        return first();
+    }
+
+    @Override
+    public E pop() {
+        return removeFirst();
     }
 }

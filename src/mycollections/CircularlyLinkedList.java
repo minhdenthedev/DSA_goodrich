@@ -1,6 +1,6 @@
-package chapter3.examples.lists;
+package mycollections;
 
-public class CircularlyLinkedList<E> implements List<E>{
+public class CircularlyLinkedList<E> implements List<E> {
     private static class Node<E> {
         private E element;
         private Node<E> next;
