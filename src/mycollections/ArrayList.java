@@ -1,6 +1,8 @@
 package mycollections;
 
-public class ArrayList<E> implements List<E> {
+import java.util.Iterator;
+
+public class ArrayList<E> implements List<E>, Iterable<E> {
     private E[] data;
     private int size = 0;
     private final static int CAPACITY = 16;
@@ -104,5 +106,23 @@ public class ArrayList<E> implements List<E> {
         E[] newData = (E[]) new Object[data.length * 2];
         System.arraycopy(data, 0, newData, 0, data.length);
         data = newData;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+            int i = 0;
+            @Override
+            public boolean hasNext() {
+                return data[i] != null;
+            }
+
+            @Override
+            public E next() {
+                E temp = data[i];
+                i++;
+                return temp;
+            }
+        };
     }
 }

@@ -3,6 +3,10 @@ package chapter6.exercises.projects.p6_35;
 import mycollections.SinglyLinkedList;
 import mycollections.Stack;
 
+/**
+ * @author hminh
+ * Postfix evaluator exercise.
+ */
 public class PostfixEvaluator {
     public static int evaluate(String pf) {
         final String NUMBERS = "0123456789";
