@@ -2,7 +2,7 @@ package mycollections;
 
 import java.util.Iterator;
 
-public class LInkedBinaryTree<E> extends AbstractBinaryTree<E> {
+public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
     protected static class Node<E> implements Position<E> {
         private E element;
         private Node<E> right;
@@ -57,7 +57,7 @@ public class LInkedBinaryTree<E> extends AbstractBinaryTree<E> {
     protected Node<E> root = null;
     private int size = 0;
 
-    public LInkedBinaryTree() {}
+    public LinkedBinaryTree() {}
 
     // private utility
     /** Validates the position and returns it as node */
@@ -77,6 +77,16 @@ public class LInkedBinaryTree<E> extends AbstractBinaryTree<E> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return null;
+    }
+
+    @Override
+    public Iterable<Position<E>> positions() {
+        return null;
     }
 
     @Override
@@ -138,13 +148,63 @@ public class LInkedBinaryTree<E> extends AbstractBinaryTree<E> {
         return temp;
     }
 
-    @Override
-    public Iterator<E> iterator() {
-        return null;
+
+    /** Attaches tree t1 and t2 as left and right subtrees of external p */
+    public void attach(Position<E> p, LinkedBinaryTree<E> t1, LinkedBinaryTree<E> t2) throws IllegalArgumentException {
+        Node<E> node = validate(p);
+        if (isInternal(p)) throw new IllegalArgumentException("p must be a leaf!");
+        size += t1.size() + t2.size();
+        if (!t1.isEmpty()) {
+            t1.root.setParent(node);
+            node.setLeft(t1.root);
+            // Help garbage collector
+            t1.root = null;
+            t1.size = 0;
+        }
+
+        if (!t2.isEmpty()) {
+            t2.root.setParent(node);
+            node.setLeft(t2.root);
+            t2.root = null;
+            t2.size = 0;
+        }
     }
 
-    @Override
-    public Iterable<Position<E>> positions() {
-        return null;
+    /** Removes the node at Position p and replaces it with its child,  if any */
+    public E remove(Position<E> p) throws IllegalArgumentException {
+        Node<E> node = validate(p);
+
+        // Get the child of the node
+        if (numOfChildren(p) == 2) throw new IllegalArgumentException("p has two children!");
+        Node<E> child = (node.getLeft() != null ? node.getLeft() : node.getRight());
+
+        // Set the new parent of child node to its grandparent
+        if (child != null) {
+            child.setParent(node.getParent());
+        }
+
+        // Set the child position of the new parent
+        if (node == root) {
+            root = child;
+        } else {
+            Node<E> parent = node.getParent();
+            if (node == parent.getLeft()) {
+                parent.setLeft(child);
+            } else {
+                parent.setRight(child);
+            }
+        }
+
+        // Remove the node instance from the tree
+        size--;
+        E temp = node.getElement();
+        node.setElement(null);
+        node.setLeft(null);
+        node.setRight(null);
+        node.setParent(node);   // Convention for defunct node
+
+        return temp;
     }
+
+
 }
